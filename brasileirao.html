@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brasileirão – Seu Mercado Brasileiro em Portugal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Asap:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       CSS VARIABLES — BRAND COLOURS
+    ============================================================ */
+    :root {
+      --azul:   #063F59;
+      --verde:  #207A35;
+      --amarelo:#F1C42A;
+      --cinza:  #F2F2F2;
+      --branco: #FFFFFF;
+      --texto:  #1a1a1a;
+      --radius: 12px;
+      --shadow: 0 4px 24px rgba(6,63,89,.13);
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Asap', sans-serif;
+      color: var(--texto);
+      background: var(--branco);
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Oswald', sans-serif;
+      letter-spacing: .02em;
+    }
+
+    img { display: block; max-width: 100%; }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* ============================================================
+       AZULEJO PATTERN (SVG inline via background)
+    ============================================================ */
+    .azulejo-bg {
+      background-color: var(--verde);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='80' height='80' fill='%23207A35'/%3E%3Cg fill='none' stroke='%23F1C42A' stroke-width='1.5' opacity='.35'%3E%3Crect x='4' y='4' width='72' height='72' rx='4'/%3E%3Ccircle cx='40' cy='40' r='20'/%3E%3Cpath d='M4 4 L40 40 L76 4 M4 76 L40 40 L76 76'/%3E%3C/g%3E%3Ccircle cx='40' cy='40' r='6' fill='%23F1C42A' opacity='.4'/%3E%3Ccircle cx='4' cy='4' r='4' fill='%23F1C42A' opacity='.25'/%3E%3Ccircle cx='76' cy='4' r='4' fill='%23F1C42A' opacity='.25'/%3E%3Ccircle cx='4' cy='76' r='4' fill='%23F1C42A' opacity='.25'/%3E%3Ccircle cx='76' cy='76' r='4' fill='%23F1C42A' opacity='.25'/%3E%3C/svg%3E");
+    }
+
+    /* ============================================================
+       NAVBAR
+    ============================================================ */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: var(--azul);
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+      box-shadow: 0 2px 16px rgba(0,0,0,.25);
+      transition: background .3s;
+    }
+
+    .navbar.scrolled { background: rgba(6,63,89,.97); backdrop-filter: blur(8px); }
+
+    .navbar__logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .navbar__logo img { width: 48px; height: 48px; object-fit: contain; }
+
+    .navbar__brand {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--amarelo);
+      letter-spacing: .04em;
+    }
+
+    .navbar__brand span { color: var(--branco); font-weight: 400; font-size: .85rem; display: block; line-height: 1; margin-top: -2px; }
+
+    .navbar__links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .navbar__links a {
+      color: rgba(255,255,255,.85);
+      font-size: .9rem;
+      font-weight: 500;
+      transition: color .2s;
+      position: relative;
+    }
+
+    .navbar__links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0;
+      width: 0; height: 2px;
+      background: var(--amarelo);
+      transition: width .25s;
+    }
+
+    .navbar__links a:hover { color: var(--amarelo); }
+    .navbar__links a:hover::after { width: 100%; }
+
+    .navbar__cta {
+      background: var(--amarelo);
+      color: var(--azul) !important;
+      font-weight: 700 !important;
+      padding: .45rem 1.2rem;
+      border-radius: 50px;
+      transition: transform .2s, box-shadow .2s !important;
+    }
+
+    .navbar__cta:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(241,196,42,.45); }
+    .navbar__cta::after { display: none !important; }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--branco);
+      border-radius: 2px;
+      transition: transform .3s, opacity .3s;
+    }
+
+    /* ============================================================
+       HERO
+    ============================================================ */
+    .hero {
+      min-height: 100vh;
+      background: var(--azul);
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding: 100px 5% 60px;
+    }
+
+    /* Decorative circles */
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(32,122,53,.55) 0%, transparent 70%);
+      top: -200px; right: -200px;
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(241,196,42,.18) 0%, transparent 70%);
+      bottom: -150px; left: -100px;
+      pointer-events: none;
+    }
+
+    .hero__inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero__tag {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: rgba(241,196,42,.15);
+      border: 1px solid rgba(241,196,42,.4);
+      color: var(--amarelo);
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: .35rem 1rem;
+      border-radius: 50px;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero__title {
+      font-size: clamp(2.8rem, 5vw, 4.2rem);
+      color: var(--branco);
+      line-height: 1.05;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero__title em {
+      color: var(--amarelo);
+      font-style: normal;
+      display: block;
+    }
+
+    .hero__sub {
+      color: rgba(255,255,255,.75);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      max-width: 480px;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero__actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .85rem 1.8rem;
+      border-radius: 50px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: transform .2s, box-shadow .2s, background .2s;
+    }
+
+    .btn--primary {
+      background: var(--amarelo);
+      color: var(--azul);
+    }
+
+    .btn--primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(241,196,42,.4);
+    }
+
+    .btn--outline {
+      background: transparent;
+      color: var(--branco);
+      border-color: rgba(255,255,255,.4);
+    }
+
+    .btn--outline:hover {
+      border-color: var(--branco);
+      transform: translateY(-3px);
+    }
+
+    .btn--verde {
+      background: var(--verde);
+      color: var(--branco);
+    }
+
+    .btn--verde:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(32,122,53,.35);
+    }
+
+    /* Hero visual */
+    .hero__visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .hero__shield {
+      width: 380px;
+      height: 380px;
+      object-fit: contain;
+      filter: drop-shadow(0 20px 60px rgba(0,0,0,.4));
+      animation: float 5s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-18px); }
+    }
+
+    .hero__badge {
+      position: absolute;
+      bottom: 20px;
+      right: 0;
+      background: var(--verde);
+      color: var(--branco);
+      font-family: 'Oswald', sans-serif;
+      font-size: .85rem;
+      font-weight: 600;
+      padding: .6rem 1.2rem;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      box-shadow: var(--shadow);
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(32,122,53,.5); }
+      50% { box-shadow: 0 0 0 10px rgba(32,122,53,0); }
+    }
+
+    /* Hero stats strip */
+    .hero__stats {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,.1);
+      flex-wrap: wrap;
+    }
+
+    .hero__stat { color: var(--branco); }
+
+    .hero__stat strong {
+      display: block;
+      font-family: 'Oswald', sans-serif;
+      font-size: 2rem;
+      color: var(--amarelo);
+    }
+
+    .hero__stat span { font-size: .85rem; color: rgba(255,255,255,.6); }
+
+    /* ============================================================
+       SECTION UTILITIES
+    ============================================================ */
+    .section {
+      padding: 96px 5%;
+    }
+
+    .section__inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section__label {
+      display: inline-block;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--verde);
+      margin-bottom: .75rem;
+    }
+
+    .section__title {
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      color: var(--azul);
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+
+    .section__title em { color: var(--verde); font-style: normal; }
+
+    .section__desc {
+      font-size: 1.05rem;
+      color: #555;
+      line-height: 1.75;
+      max-width: 600px;
+    }
+
+    .section__header { margin-bottom: 3.5rem; }
+
+    .section__header--center { text-align: center; }
+    .section__header--center .section__desc { margin: 0 auto; }
+
+    /* ============================================================
+       CONCEITO / SAUDADE
+    ============================================================ */
+    .conceito {
+      background: var(--cinza);
+    }
+
+    .conceito__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .conceito__image-wrap {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .conceito__store {
+      width: 100%;
+      height: 420px;
+      object-fit: cover;
+      border-radius: var(--radius);
+    }
+
+    /* Store illustration (CSS) */
+    .store-illus {
+      width: 100%;
+      height: 420px;
+      background: var(--verde);
+      border-radius: var(--radius);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .store-illus__shelf {
+      position: absolute;
+      bottom: 0;
+      left: 0; right: 0;
+      height: 60%;
+      background: linear-gradient(to top, rgba(6,63,89,.9) 0%, transparent 100%);
+    }
+
+    .store-illus__sign {
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--azul);
+      padding: 14px 32px;
+      border-radius: 8px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .store-illus__sign-name {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--branco);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .store-illus__sign-sub {
+      font-size: .7rem;
+      color: var(--amarelo);
+      letter-spacing: .1em;
+      margin-top: 2px;
+    }
+
+    .store-illus__products {
+      position: absolute;
+      bottom: 32px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      padding: 0 24px;
+    }
+
+    .store-illus__prod {
+      width: 50px;
+      height: 70px;
+      border-radius: 6px;
+      background: var(--amarelo);
+      opacity: .85;
+    }
+
+    .store-illus__prod:nth-child(2) { height: 55px; background: #e8a020; }
+    .store-illus__prod:nth-child(3) { height: 80px; background: #b8d44a; }
+    .store-illus__prod:nth-child(4) { height: 60px; background: #f97444; }
+    .store-illus__prod:nth-child(5) { height: 75px; background: #4ab8e8; }
+    .store-illus__prod:nth-child(6) { height: 50px; background: var(--amarelo); opacity: .6; }
+    .store-illus__prod:nth-child(7) { height: 85px; background: #d44a4a; }
+
+    .conceito__tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      margin-top: 2rem;
+    }
+
+    .tag {
+      background: var(--branco);
+      border: 1.5px solid rgba(6,63,89,.15);
+      color: var(--azul);
+      font-size: .8rem;
+      font-weight: 600;
+      padding: .35rem .9rem;
+      border-radius: 50px;
+      letter-spacing: .03em;
+    }
+
+    .tag--verde { background: rgba(32,122,53,.1); border-color: var(--verde); color: var(--verde); }
+    .tag--amarelo { background: rgba(241,196,42,.15); border-color: var(--amarelo); color: #9a7600; }
+
+    /* ============================================================
+       CATEGORIAS
+    ============================================================ */
+    .categorias { background: var(--branco); }
+
+    .cat__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .cat__card {
+      background: var(--cinza);
+      border-radius: var(--radius);
+      padding: 2rem 1.2rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: transform .25s, box-shadow .25s, background .25s;
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cat__card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 4px;
+      background: var(--verde);
+      transform: scaleX(0);
+      transition: transform .25s;
+      transform-origin: left;
+    }
+
+    .cat__card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow);
+      background: var(--branco);
+    }
+
+    .cat__card:hover::before { transform: scaleX(1); }
+
+    .cat__icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .cat__name {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--azul);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin-bottom: .3rem;
+    }
+
+    .cat__desc {
+      font-size: .78rem;
+      color: #777;
+      line-height: 1.5;
+    }
+
+    /* ============================================================
+       DESTAQUE / BANNER
+    ============================================================ */
+    .banner {
+      background: var(--verde);
+      padding: 64px 5%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='80' height='80' fill='none'/%3E%3Cg fill='none' stroke='%23F1C42A' stroke-width='1' opacity='.15'%3E%3Crect x='4' y='4' width='72' height='72' rx='4'/%3E%3Ccircle cx='40' cy='40' r='20'/%3E%3Cpath d='M4 4 L40 40 L76 4 M4 76 L40 40 L76 76'/%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .banner__inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .banner__text .label {
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--amarelo);
+      margin-bottom: .5rem;
+    }
+
+    .banner__title {
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      color: var(--branco);
+      line-height: 1.1;
+    }
+
+    .banner__title strong { color: var(--amarelo); }
+
+    .banner__sub {
+      color: rgba(255,255,255,.8);
+      font-size: 1rem;
+      margin-top: .75rem;
+      max-width: 500px;
+    }
+
+    /* ============================================================
+       DIFERENCIAIS
+    ============================================================ */
+    .diferenciais { background: var(--azul); }
+    .diferenciais .section__title { color: var(--branco); }
+    .diferenciais .section__label { color: var(--amarelo); }
+    .diferenciais .section__desc { color: rgba(255,255,255,.7); }
+
+    .dif__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .dif__card {
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: var(--radius);
+      padding: 2rem;
+      transition: background .25s, transform .25s;
+    }
+
+    .dif__card:hover {
+      background: rgba(255,255,255,.1);
+      transform: translateY(-4px);
+    }
+
+    .dif__icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: rgba(241,196,42,.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .dif__title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--amarelo);
+      margin-bottom: .5rem;
+    }
+
+    .dif__desc {
+      font-size: .88rem;
+      color: rgba(255,255,255,.65);
+      line-height: 1.65;
+    }
+
+    /* ============================================================
+       PRODUTOS EM DESTAQUE
+    ============================================================ */
+    .produtos { background: var(--cinza); }
+
+    .prod__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .prod__card {
+      background: var(--branco);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,.07);
+      transition: transform .25s, box-shadow .25s;
+    }
+
+    .prod__card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 32px rgba(0,0,0,.13);
+    }
+
+    .prod__image {
+      width: 100%;
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      position: relative;
+    }
+
+    .prod__badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--amarelo);
+      color: var(--azul);
+      font-family: 'Oswald', sans-serif;
+      font-size: .7rem;
+      font-weight: 700;
+      padding: .2rem .6rem;
+      border-radius: 50px;
+      letter-spacing: .03em;
+    }
+
+    .prod__info { padding: 1rem 1.2rem 1.4rem; }
+
+    .prod__cat {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--verde);
+      margin-bottom: .3rem;
+    }
+
+    .prod__name {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--azul);
+      margin-bottom: .3rem;
+    }
+
+    .prod__origin {
+      font-size: .78rem;
+      color: #999;
+    }
+
+    /* ============================================================
+       DEPOIMENTOS
+    ============================================================ */
+    .depoimentos { background: var(--branco); }
+
+    .dep__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .dep__card {
+      background: var(--cinza);
+      border-radius: var(--radius);
+      padding: 2rem;
+      position: relative;
+    }
+
+    .dep__quote {
+      font-size: 3rem;
+      color: var(--amarelo);
+      line-height: .8;
+      font-family: Georgia, serif;
+      margin-bottom: .5rem;
+    }
+
+    .dep__text {
+      font-size: .95rem;
+      color: #444;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+      font-style: italic;
+    }
+
+    .dep__author {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+
+    .dep__avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--verde);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--branco);
+      font-family: 'Oswald', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .dep__name {
+      font-family: 'Oswald', sans-serif;
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--azul);
+    }
+
+    .dep__city { font-size: .78rem; color: #888; }
+
+    .dep__stars { color: var(--amarelo); font-size: .9rem; letter-spacing: 2px; }
+
+    /* ============================================================
+       LOCALIZAÇÃO
+    ============================================================ */
+    .localizacao { background: var(--cinza); }
+
+    .loc__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .loc__card {
+      background: var(--branco);
+      border-radius: var(--radius);
+      padding: 2.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .loc__item {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .loc__item:last-child { border-bottom: none; }
+
+    .loc__item-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(32,122,53,.1);
+      color: var(--verde);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .loc__item-label {
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: .2rem;
+    }
+
+    .loc__item-value {
+      font-size: .95rem;
+      color: var(--azul);
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    .loc__map {
+      width: 100%;
+      height: 360px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 1rem;
+      border: 2px solid rgba(32,122,53,.2);
+    }
+
+    .loc__map-pin {
+      font-size: 4rem;
+      animation: bounce 1.5s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .loc__map-text {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--azul);
+      text-align: center;
+    }
+
+    .loc__map-sub {
+      font-size: .85rem;
+      color: #666;
+      text-align: center;
+    }
+
+    .loc__map a.btn {
+      margin-top: .5rem;
+    }
+
+    /* ============================================================
+       WHATSAPP FLOAT
+    ============================================================ */
+    .wa-float {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 999;
+      width: 58px;
+      height: 58px;
+      background: #25D366;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,.5);
+      cursor: pointer;
+      transition: transform .25s;
+      text-decoration: none;
+    }
+
+    .wa-float:hover { transform: scale(1.1); }
+
+    .wa-float svg { width: 30px; height: 30px; }
+
+    /* Tooltip */
+    .wa-float::before {
+      content: 'Fale connosco!';
+      position: absolute;
+      right: 70px;
+      background: var(--azul);
+      color: var(--branco);
+      font-family: 'Asap', sans-serif;
+      font-size: .78rem;
+      font-weight: 600;
+      padding: .4rem .8rem;
+      border-radius: 6px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s;
+    }
+
+    .wa-float:hover::before { opacity: 1; }
+
+    /* ============================================================
+       NEWSLETTER
+    ============================================================ */
+    .newsletter {
+      background: var(--amarelo);
+      padding: 72px 5%;
+    }
+
+    .newsletter__inner {
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .newsletter__emoji { font-size: 3rem; margin-bottom: 1rem; }
+
+    .newsletter__title {
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      color: var(--azul);
+      margin-bottom: .75rem;
+    }
+
+    .newsletter__sub {
+      color: rgba(6,63,89,.7);
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .newsletter__form {
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .newsletter__input {
+      flex: 1;
+      min-width: 240px;
+      max-width: 380px;
+      padding: .9rem 1.4rem;
+      border-radius: 50px;
+      border: 2px solid rgba(6,63,89,.2);
+      font-family: 'Asap', sans-serif;
+      font-size: .95rem;
+      outline: none;
+      transition: border-color .2s;
+      background: rgba(255,255,255,.8);
+    }
+
+    .newsletter__input:focus {
+      border-color: var(--azul);
+      background: var(--branco);
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer {
+      background: var(--azul);
+      padding: 60px 5% 0;
+    }
+
+    .footer__grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1.2fr;
+      gap: 3rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+
+    .footer__brand .navbar__brand {
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .footer__tagline {
+      color: rgba(255,255,255,.6);
+      font-size: .9rem;
+      line-height: 1.65;
+      margin-bottom: 1.5rem;
+      max-width: 260px;
+    }
+
+    .footer__social {
+      display: flex;
+      gap: .75rem;
+    }
+
+    .footer__social a {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--branco);
+      font-size: .9rem;
+      transition: background .2s;
+    }
+
+    .footer__social a:hover { background: var(--verde); }
+
+    .footer__col-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: .9rem;
+      font-weight: 600;
+      color: var(--amarelo);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 1.25rem;
+    }
+
+    .footer__links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+    }
+
+    .footer__links a {
+      color: rgba(255,255,255,.6);
+      font-size: .88rem;
+      transition: color .2s;
+    }
+
+    .footer__links a:hover { color: var(--branco); }
+
+    .footer__bottom {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 0;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .footer__copy {
+      font-size: .8rem;
+      color: rgba(255,255,255,.4);
+    }
+
+    .footer__flags { font-size: 1.3rem; letter-spacing: 4px; }
+
+    /* ============================================================
+       SCROLL ANIMATIONS
+    ============================================================ */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 900px) {
+      .hero__inner { grid-template-columns: 1fr; text-align: center; }
+      .hero__shield { width: 280px; height: 280px; }
+      .hero__visual { order: -1; }
+      .hero__sub { margin: 0 auto 2.5rem; }
+      .hero__actions { justify-content: center; }
+      .hero__stats { justify-content: center; gap: 2rem; }
+
+      .conceito__grid,
+      .loc__grid { grid-template-columns: 1fr; gap: 2.5rem; }
+
+      .footer__grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    }
+
+    @media (max-width: 640px) {
+      .navbar__links { display: none; }
+      .hamburger { display: flex; }
+      .navbar__links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 68px; left: 0; right: 0;
+        background: var(--azul);
+        padding: 1.5rem 5%;
+        gap: 1.2rem;
+        border-top: 1px solid rgba(255,255,255,.1);
+      }
+
+      .section { padding: 64px 5%; }
+      .footer__grid { grid-template-columns: 1fr; }
+
+      .banner__inner { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =============================================
+       NAVBAR
+  ============================================= -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar__logo">
+      <img src="logo_brasao_.png" alt="Brasileirão Logo" />
+      <div>
+        <span class="navbar__brand">BRASILEIRÃO<span>Seu Mercado Brasileiro em Portugal</span></span>
+      </div>
+    </div>
+
+    <ul class="navbar__links" id="navLinks">
+      <li><a href="#conceito">Sobre Nós</a></li>
+      <li><a href="#categorias">Categorias</a></li>
+      <li><a href="#produtos">Produtos</a></li>
+      <li><a href="#depoimentos">Clientes</a></li>
+      <li><a href="#localizacao">Localização</a></li>
+      <li><a href="#localizacao" class="navbar__cta">📍 Como Chegar</a></li>
+    </ul>
+
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- =============================================
+       HERO
+  ============================================= -->
+  <section class="hero" id="inicio">
+    <div class="hero__inner">
+
+      <div class="hero__content">
+        <div class="hero__tag">
+          🇧🇷 Mercado Brasileiro em Portugal
+        </div>
+        <h1 class="hero__title">
+          Um pedaço do
+          <em>Brasil no coração</em>
+          de Portugal
+        </h1>
+        <p class="hero__sub">
+          Saudade? No Brasileirão encontra os sabores, aromas e produtos que conectam você às suas raízes. Mais que uma loja, somos a sua comunidade brasileira em Portugal.
+        </p>
+        <div class="hero__actions">
+          <a href="#categorias" class="btn btn--primary">🛒 Ver Produtos</a>
+          <a href="#localizacao" class="btn btn--outline">📍 Nossa Loja</a>
+        </div>
+      </div>
+
+      <div class="hero__visual">
+        <!-- Logo oficial -->
+        <img class="hero__shield" src="logo_brasao_.png" alt="Brasileirão – Seu Mercado Brasileiro em Portugal" />
+
+        <div class="hero__badge">
+          ✅ Aberto Hoje
+        </div>
+      </div>
+
+      <div class="hero__stats">
+        <div class="hero__stat">
+          <strong>500+</strong>
+          <span>Produtos brasileiros</span>
+        </div>
+        <div class="hero__stat">
+          <strong>5★</strong>
+          <span>Avaliação dos clientes</span>
+        </div>
+        <div class="hero__stat">
+          <strong>🇧🇷🇵🇹</strong>
+          <span>União entre dois países</span>
+        </div>
+        <div class="hero__stat">
+          <strong>Toda semana</strong>
+          <span>Novidades na loja</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       CONCEITO / SAUDADE
+  ============================================= -->
+  <section class="section conceito" id="conceito">
+    <div class="section__inner">
+      <div class="conceito__grid">
+
+        <div class="fade-up">
+          <!-- Store illustration -->
+          <div class="store-illus">
+            <!-- Azulejo pattern on sides -->
+            <div style="position:absolute;inset:0;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22%3E%3Crect width=%2280%22 height=%2280%22 fill=%22%23207A35%22/%3E%3Cg fill=%22none%22 stroke=%22%23F1C42A%22 stroke-width=%221.5%22 opacity=%22.2%22%3E%3Crect x=%224%22 y=%224%22 width=%2272%22 height=%2272%22 rx=%224%22/%3E%3Ccircle cx=%2240%22 cy=%2240%22 r=%2220%22/%3E%3C/g%3E%3C/svg%3E');opacity:0.6;border-radius:var(--radius);"></div>
+            <div class="store-illus__sign">
+              <div class="store-illus__sign-name">
+                🛒 BRASILEIRÃO
+              </div>
+              <div class="store-illus__sign-sub">SEU MERCADO BRASILEIRO EM PORTUGAL</div>
+            </div>
+            <div class="store-illus__shelf"></div>
+            <div class="store-illus__products">
+              <div class="store-illus__prod"></div>
+              <div class="store-illus__prod"></div>
+              <div class="store-illus__prod"></div>
+              <div class="store-illus__prod"></div>
+              <div class="store-illus__prod"></div>
+              <div class="store-illus__prod"></div>
+              <div class="store-illus__prod"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fade-up">
+          <span class="section__label">Nosso Conceito</span>
+          <h2 class="section__title">Acolher a <em>saudade</em>,<br>resgatar memórias</h2>
+          <p class="section__desc">
+            O Brasileirão nasceu para oferecer um pedaço do Brasil a quem vive longe de casa. A nossa marca foi criada para transmitir proximidade, tradição e alegria — traduzindo o espírito brasileiro numa experiência acessível e calorosa em território português.
+          </p>
+          <p class="section__desc" style="margin-top:1rem;">
+            Mais do que uma loja, o Brasileirão é um <strong style="color:var(--verde)">ponto de encontro</strong>, uma comunidade e um símbolo de pertencimento para todos os brasileiros em Portugal.
+          </p>
+
+          <div class="conceito__tag-row">
+            <span class="tag tag--verde">🇧🇷 Produtos Autênticos</span>
+            <span class="tag tag--amarelo">💛 Sabor de Casa</span>
+            <span class="tag">🤝 Comunidade</span>
+            <span class="tag tag--verde">📦 Novidades Semanais</span>
+            <span class="tag">❤️ Empresa Familiar</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       CATEGORIAS
+  ============================================= -->
+  <section class="section categorias" id="categorias">
+    <div class="section__inner">
+      <div class="section__header section__header--center fade-up">
+        <span class="section__label">O Que Encontra</span>
+        <h2 class="section__title">Tudo o que você precisa,<br><em>direto do Brasil</em></h2>
+        <p class="section__desc">Mais de 500 produtos cuidadosamente selecionados para trazer o autêntico sabor brasileiro até Portugal.</p>
+      </div>
+
+      <div class="cat__grid">
+        <div class="cat__card fade-up">
+          <span class="cat__icon">☕</span>
+          <div class="cat__name">Café & Bebidas</div>
+          <div class="cat__desc">Café torrado, achocolatados, sucos e refrigerantes brasileiros</div>
+        </div>
+        <div class="cat__card fade-up">
+          <span class="cat__icon">🍞</span>
+          <div class="cat__name">Padaria & Farinhas</div>
+          <div class="cat__desc">Farinha de mandioca, tapioca, mistura para pão de queijo e muito mais</div>
+        </div>
+        <div class="cat__card fade-up">
+          <span class="cat__icon">🌶️</span>
+          <div class="cat__name">Temperos & Molhos</div>
+          <div class="cat__desc">Colorau, caldo de carne, molho de pimenta e condimentos especiais</div>
+        </div>
+        <div class="cat__card fade-up">
+          <span class="cat__icon">🍫</span>
+          <div class="cat__name">Doces & Snacks</div>
+          <div class="cat__desc">Brigadeiro, paçoca, biscoitos Bauducco e os clássicos do Brasil</div>
+        </div>
+        <div class="cat__card fade-up">
+          <span class="cat__icon">🫘</span>
+          <div class="cat__name">Grãos & Arroz</div>
+          <div class="cat__desc">Feijão carioca, feijão preto, arroz parboilizado e lentilhas</div>
+        </div>
+        <div class="cat__card fade-up">
+          <span class="cat__icon">🧴</span>
+          <div class="cat__name">Higiene & Beleza</div>
+          <div class="cat__desc">Cremes Natura, Phebo, sabonetes e produtos de beleza brasileiros</div>
+        </div>
+        <div class="cat__card fade-up">
+          <span class="cat__icon">🥩</span>
+          <div class="cat__name">Carnes & Frios</div>
+          <div class="cat__desc">Linguiça calabresa, picanha, costelinha e cortes típicos do Brasil</div>
+        </div>
+        <div class="cat__card fade-up">
+          <span class="cat__icon">🎉</span>
+          <div class="cat__name">Festas & Presentes</div>
+          <div class="cat__desc">Kits presente, produtos temáticos e seleções especiais para ocasiões</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       BANNER DESTAQUE
+  ============================================= -->
+  <div class="banner">
+    <div class="banner__inner">
+      <div class="banner__text fade-up">
+        <div class="label">🔥 Oferta da Semana</div>
+        <h3 class="banner__title">Duvido você <strong>resistir!</strong><br>Peça já as melhores ofertas.</h3>
+        <p class="banner__sub">Novos produtos chegam toda semana. Siga-nos nas redes sociais para não perder nenhuma promoção exclusiva.</p>
+      </div>
+      <div class="fade-up" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center;">
+        <a href="#" class="btn btn--primary">Ver Ofertas da Semana</a>
+        <a href="https://wa.me/351000000000" target="_blank" class="btn btn--outline" style="border-color:rgba(255,255,255,.5);color:#fff;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================
+       DIFERENCIAIS
+  ============================================= -->
+  <section class="section diferenciais" id="sobre">
+    <div class="section__inner">
+      <div class="section__header fade-up">
+        <span class="section__label">Por que Escolher-nos</span>
+        <h2 class="section__title" style="color:#fff;">O que nos torna <em style="color:var(--amarelo)">especiais</em></h2>
+        <p class="section__desc">Somos mais do que um mercado. Somos a ponte entre o Brasil e Portugal, construída com carinho e dedicação.</p>
+      </div>
+
+      <div class="dif__grid">
+        <div class="dif__card fade-up">
+          <div class="dif__icon">🇧🇷</div>
+          <div class="dif__title">Produtos 100% Autênticos</div>
+          <div class="dif__desc">Todos os produtos são importados diretamente do Brasil, garantindo autenticidade e a qualidade que você conhece e ama.</div>
+        </div>
+        <div class="dif__card fade-up">
+          <div class="dif__icon">🚚</div>
+          <div class="dif__title">Novidades Toda Semana</div>
+          <div class="dif__desc">Recebemos novos produtos semanalmente para que nunca falte o que você precisa. Siga nossas redes para ver as chegadas!</div>
+        </div>
+        <div class="dif__card fade-up">
+          <div class="dif__icon">❤️</div>
+          <div class="dif__title">Atendimento Caloroso</div>
+          <div class="dif__desc">Somos uma empresa familiar e tratamos cada cliente como parte da nossa família. Aqui você se sente em casa.</div>
+        </div>
+        <div class="dif__card fade-up">
+          <div class="dif__icon">💬</div>
+          <div class="dif__title">Comunidade Brasileira</div>
+          <div class="dif__desc">Mais do que uma loja, somos um ponto de encontro. Um lugar de pertencimento para a comunidade brasileira em Portugal.</div>
+        </div>
+        <div class="dif__card fade-up">
+          <div class="dif__icon">💳</div>
+          <div class="dif__title">Pagamentos Facilitados</div>
+          <div class="dif__desc">Aceitamos Multibanco, MB Way, cartões de crédito e débito. Compra rápida e segura para o seu conforto.</div>
+        </div>
+        <div class="dif__card fade-up">
+          <div class="dif__icon">📦</div>
+          <div class="dif__title">Encomendas Especiais</div>
+          <div class="dif__desc">Não encontrou o produto que procura? Fale connosco! Fazemos encomendas especiais sob pedido via WhatsApp.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       PRODUTOS EM DESTAQUE
+  ============================================= -->
+  <section class="section produtos" id="produtos">
+    <div class="section__inner">
+      <div class="section__header section__header--center fade-up">
+        <span class="section__label">Mais Vendidos</span>
+        <h2 class="section__title">Produtos em <em>destaque</em></h2>
+        <p class="section__desc">Os favoritos dos nossos clientes. Produtos que não podem faltar na sua despensa brasileira!</p>
+      </div>
+
+      <div class="prod__grid">
+        <div class="prod__card fade-up">
+          <div class="prod__image" style="background:#FFF9E6;">
+            ☕
+            <div class="prod__badge">Mais Vendido</div>
+          </div>
+          <div class="prod__info">
+            <div class="prod__cat">Café & Bebidas</div>
+            <div class="prod__name">Café Pilão Extraforte</div>
+            <div class="prod__origin">🇧🇷 São Paulo, Brasil</div>
+          </div>
+        </div>
+        <div class="prod__card fade-up">
+          <div class="prod__image" style="background:#F5F5DC;">
+            🧀
+            <div class="prod__badge">Clássico</div>
+          </div>
+          <div class="prod__info">
+            <div class="prod__cat">Padaria</div>
+            <div class="prod__name">Mistura Pão de Queijo</div>
+            <div class="prod__origin">🇧🇷 Minas Gerais, Brasil</div>
+          </div>
+        </div>
+        <div class="prod__card fade-up">
+          <div class="prod__image" style="background:#FFF0F0;">
+            🌶️
+          </div>
+          <div class="prod__info">
+            <div class="prod__cat">Temperos</div>
+            <div class="prod__name">Caldo Knorr Galinha</div>
+            <div class="prod__origin">🇧🇷 Brasil</div>
+          </div>
+        </div>
+        <div class="prod__card fade-up">
+          <div class="prod__image" style="background:#FDF5E6;">
+            🍫
+            <div class="prod__badge">Novo</div>
+          </div>
+          <div class="prod__info">
+            <div class="prod__cat">Doces</div>
+            <div class="prod__name">Biscoito Bauducco</div>
+            <div class="prod__origin">🇧🇷 Brasil</div>
+          </div>
+        </div>
+        <div class="prod__card fade-up">
+          <div class="prod__image" style="background:#F0FFF0;">
+            🫘
+          </div>
+          <div class="prod__info">
+            <div class="prod__cat">Grãos</div>
+            <div class="prod__name">Feijão Carioca</div>
+            <div class="prod__origin">🇧🇷 Brasil</div>
+          </div>
+        </div>
+        <div class="prod__card fade-up">
+          <div class="prod__image" style="background:#FFF0F5;">
+            🥜
+            <div class="prod__badge">Favorito</div>
+          </div>
+          <div class="prod__info">
+            <div class="prod__cat">Doces</div>
+            <div class="prod__name">Paçoca Rolha</div>
+            <div class="prod__origin">🇧🇷 Brasil</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:3rem;" class="fade-up">
+        <a href="https://wa.me/351000000000?text=Olá!%20Gostaria%20de%20ver%20mais%20produtos%20disponíveis." target="_blank" class="btn btn--verde">
+          Ver Todos os Produtos via WhatsApp →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       DEPOIMENTOS
+  ============================================= -->
+  <section class="section depoimentos" id="depoimentos">
+    <div class="section__inner">
+      <div class="section__header section__header--center fade-up">
+        <span class="section__label">Clientes Felizes</span>
+        <h2 class="section__title">O que dizem os nossos <em>clientes</em></h2>
+        <p class="section__desc">Brasileiros e portugueses que encontraram no Brasileirão um bocadinho do Brasil em Portugal.</p>
+      </div>
+
+      <div class="dep__grid">
+        <div class="dep__card fade-up">
+          <div class="dep__quote">"</div>
+          <div class="dep__stars">★★★★★</div>
+          <p class="dep__text">Finalmente encontrei o café Pilão e o pão de queijo que tanto sentia falta! O atendimento é incrível, parece que estou no Brasil. Recomendo muito!</p>
+          <div class="dep__author">
+            <div class="dep__avatar">A</div>
+            <div>
+              <div class="dep__name">Ana Carolina S.</div>
+              <div class="dep__city">🇧🇷 São Paulo → 🇵🇹 Lisboa</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dep__card fade-up">
+          <div class="dep__quote">"</div>
+          <div class="dep__stars">★★★★★</div>
+          <p class="dep__text">Minha família adorou os produtos! Compramos feijão, farofa e até guaraná. Tudo fresquinho e com preços justos. Já somos clientes fiéis!</p>
+          <div class="dep__author">
+            <div class="dep__avatar" style="background:var(--azul);">R</div>
+            <div>
+              <div class="dep__name">Ricardo M.</div>
+              <div class="dep__city">🇧🇷 Minas Gerais → 🇵🇹 Porto</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dep__card fade-up">
+          <div class="dep__quote">"</div>
+          <div class="dep__stars">★★★★★</div>
+          <p class="dep__text">Vim visitar um amigo brasileiro e fiquei encantada com a loja! Descobri produtos que nunca tinha visto e o pessoal explicou tudo com muita simpatia.</p>
+          <div class="dep__author">
+            <div class="dep__avatar" style="background:#9c27b0;">M</div>
+            <div>
+              <div class="dep__name">Maria João F.</div>
+              <div class="dep__city">🇵🇹 Portuguesa, Lisboa</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       LOCALIZAÇÃO
+  ============================================= -->
+  <section class="section localizacao" id="localizacao">
+    <div class="section__inner">
+      <div class="section__header section__header--center fade-up">
+        <span class="section__label">Visite-nos</span>
+        <h2 class="section__title">Encontre a nossa <em>loja</em></h2>
+        <p class="section__desc">Venha nos visitar e sinta o Brasil em Portugal. Estamos à sua espera!</p>
+      </div>
+
+      <div class="loc__grid">
+        <div class="fade-up">
+          <div class="loc__card">
+            <div class="loc__item">
+              <div class="loc__item-icon">📍</div>
+              <div>
+                <div class="loc__item-label">Endereço</div>
+                <div class="loc__item-value">Rua do Brasileirão, nº 123<br>1000-001 Lisboa, Portugal</div>
+              </div>
+            </div>
+            <div class="loc__item">
+              <div class="loc__item-icon">🕐</div>
+              <div>
+                <div class="loc__item-label">Horário de Funcionamento</div>
+                <div class="loc__item-value">
+                  Segunda a Sexta: 9h00 – 20h00<br>
+                  Sábado: 9h00 – 18h00<br>
+                  Domingo: 10h00 – 16h00
+                </div>
+              </div>
+            </div>
+            <div class="loc__item">
+              <div class="loc__item-icon">📞</div>
+              <div>
+                <div class="loc__item-label">Contacto</div>
+                <div class="loc__item-value">+351 900 000 000<br>brasileirao@email.pt</div>
+              </div>
+            </div>
+            <div class="loc__item">
+              <div class="loc__item-icon">🚇</div>
+              <div>
+                <div class="loc__item-label">Como Chegar</div>
+                <div class="loc__item-value">Metro: Estação XXXX (linha X)<br>Autocarro: Linhas XX, XX, XX</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap;">
+            <a href="https://wa.me/351900000000" target="_blank" class="btn btn--verde" style="flex:1;justify-content:center;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+              WhatsApp
+            </a>
+            <a href="https://maps.google.com" target="_blank" class="btn btn--primary" style="flex:1;justify-content:center;">📍 Ver no Mapa</a>
+          </div>
+        </div>
+
+        <div class="fade-up">
+          <div class="loc__map">
+            <div class="loc__map-pin">📍</div>
+            <div class="loc__map-text">Brasileirão</div>
+            <div class="loc__map-sub">Seu Mercado Brasileiro em Portugal</div>
+            <a href="https://maps.google.com" target="_blank" class="btn btn--verde">Abrir Google Maps →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       NEWSLETTER
+  ============================================= -->
+  <section class="newsletter">
+    <div class="newsletter__inner fade-up">
+      <div class="newsletter__emoji">📬</div>
+      <h3 class="newsletter__title">Fique por dentro das novidades!</h3>
+      <p class="newsletter__sub">Receba as ofertas da semana, novos produtos e eventos diretamente no seu WhatsApp ou e-mail.</p>
+      <div class="newsletter__form">
+        <input type="email" class="newsletter__input" placeholder="O seu melhor e-mail..." />
+        <button class="btn btn--verde" onclick="alert('Obrigado! Em breve receberá as nossas novidades! 🇧🇷')">
+          Quero Receber!
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       FOOTER
+  ============================================= -->
+  <footer>
+    <div class="footer__grid">
+
+      <div class="footer__brand">
+        <span class="navbar__brand">BRASILEIRÃO<span>Seu Mercado Brasileiro em Portugal</span></span>
+        <p class="footer__tagline">Acolhendo a saudade e resgatando memórias para todos os brasileiros que vivem em Portugal. Um pedaço do Brasil no coração de Portugal.</p>
+        <div class="footer__social">
+          <a href="#" title="Instagram" aria-label="Instagram">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </a>
+          <a href="#" title="Facebook" aria-label="Facebook">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+          <a href="https://wa.me/351900000000" title="WhatsApp" aria-label="WhatsApp" target="_blank">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div class="footer__col-title">Navegação</div>
+        <ul class="footer__links">
+          <li><a href="#inicio">Início</a></li>
+          <li><a href="#conceito">Sobre Nós</a></li>
+          <li><a href="#categorias">Categorias</a></li>
+          <li><a href="#produtos">Produtos</a></li>
+          <li><a href="#depoimentos">Clientes</a></li>
+          <li><a href="#localizacao">Localização</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="footer__col-title">Categorias</div>
+        <ul class="footer__links">
+          <li><a href="#">Café & Bebidas</a></li>
+          <li><a href="#">Padaria & Farinhas</a></li>
+          <li><a href="#">Temperos & Molhos</a></li>
+          <li><a href="#">Doces & Snacks</a></li>
+          <li><a href="#">Grãos & Arroz</a></li>
+          <li><a href="#">Higiene & Beleza</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="footer__col-title">Contacto</div>
+        <ul class="footer__links">
+          <li><a href="https://wa.me/351900000000">📱 WhatsApp</a></li>
+          <li><a href="mailto:brasileirao@email.pt">✉️ Email</a></li>
+          <li><a href="#">📍 Google Maps</a></li>
+          <li><a href="#">📷 Instagram</a></li>
+          <li><a href="#">👥 Facebook</a></li>
+        </ul>
+        <div style="margin-top:1.5rem;">
+          <a href="https://wa.me/351900000000?text=Olá!%20Tenho%20interesse%20nos%20produtos%20do%20Brasileirão." target="_blank" class="btn btn--verde" style="font-size:.85rem;padding:.65rem 1.2rem;">
+            💬 Fale Connosco
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <div class="footer__copy">
+        © 2025 Brasileirão – Seu Mercado Brasileiro em Portugal. Todos os direitos reservados.
+      </div>
+      <div class="footer__flags">🇧🇷🇵🇹</div>
+    </div>
+  </footer>
+
+  <!-- WhatsApp Float Button -->
+  <a href="https://wa.me/351900000000?text=Olá!%20Vim%20pelo%20site%20e%20gostaria%20de%20saber%20mais." class="wa-float" target="_blank" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+    </svg>
+  </a>
+
+  <!-- ============================================================
+       JAVASCRIPT
+  ============================================================ -->
+  <script>
+    // --- Navbar scroll effect ---
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // --- Hamburger menu ---
+    const hamburger = document.getElementById('hamburger');
+    const navLinks  = document.getElementById('navLinks');
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+
+    // --- Scroll animations (IntersectionObserver) ---
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          // stagger siblings
+          const siblings = entry.target.parentElement.querySelectorAll('.fade-up');
+          siblings.forEach((el, i) => {
+            setTimeout(() => el.classList.add('visible'), i * 80);
+          });
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // --- Smooth active link highlight ---
+    const sections = document.querySelectorAll('section[id], div.banner');
+    const navItems = document.querySelectorAll('.navbar__links a');
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navItems.forEach(link => {
+            link.style.color = '';
+            if (link.getAttribute('href') === '#' + entry.target.id) {
+              link.style.color = 'var(--amarelo)';
+            }
+          });
+        }
+      });
+    }, { threshold: 0.4 });
+
+    sections.forEach(s => sectionObserver.observe(s));
+  </script>
+</body>
+</html>
